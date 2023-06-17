@@ -1,13 +1,14 @@
+use aws_sdk_s3::primitives::ByteStream;
 use graphrs;
 //use aws_sdk_s3::primitives::ByteStream;
 //use bytes::Bytes;
-use polars::prelude::DataFrame;
+use polars::prelude::{DataFrame, UniqueKeepStrategy};
 //use polars::frame::UniqueKeepStrategy;
-use std::collections::VecDeque;
 use csv::ReaderBuilder;
+use std::collections::VecDeque;
 use std::fs::File;
 
-
+#[derive(Clone)]
 struct Node {
     id: String,
     edge: String,
@@ -15,10 +16,12 @@ struct Node {
 
 #[tokio::main]
 async fn main() {
-    let file_stream: ByteStream = graphrs::download_object(
-        "divvy-tripdata", 
-        "202303-divvy-tripdata.zip").await;
-    let data: Bytes= file_stream.collect().await.map(|data| data.into_bytes()).expect("error reading data");
+    let file_stream = graphrs::download_object("divvy-tripdata", "202303-divvy-tripdata.zip").await;
+    let data = file_stream
+        .collect()
+        .await
+        .map(|data| data.into_bytes())
+        .expect("error reading data");
     graphrs::write_bytes_to_zip_file("bikes.zip", data);
     // zip file will be auto extracted into data folder
     let df: DataFrame = graphrs::read_csv("data/202303-divvy-tripdata.csv").expect("error reading csv");
