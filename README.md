@@ -19,3 +19,5 @@ took `x` or `y` time to travel from one `node` to another `node`.
 This is a real life data set and will allow us to ask interesting questions,
 that hopefully we can use `Rust` to sovle, while at the same time working
 on basic `DSA` skills.
+
+![alt text](https://github.com/danielbeach/graphRS/imgs/graph.png?raw=true)
