@@ -7,7 +7,7 @@ use std::collections::VecDeque;
 use csv::ReaderBuilder;
 use std::fs::File;
 
-
+#[derive(Clone)]
 struct Node {
     id: String,
     edge: String,
