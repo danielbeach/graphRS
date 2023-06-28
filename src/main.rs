@@ -1,8 +1,8 @@
 use graphrs;
-//use aws_sdk_s3::primitives::ByteStream;
-//use bytes::Bytes;
+use aws_sdk_s3::primitives::ByteStream;
+use bytes::Bytes;
 use polars::prelude::DataFrame;
-//use polars::frame::UniqueKeepStrategy;
+use polars::frame::UniqueKeepStrategy;
 use std::collections::VecDeque;
 use csv::ReaderBuilder;
 use std::fs::File;
@@ -15,18 +15,18 @@ struct Node {
 
 #[tokio::main]
 async fn main() {
-    //let file_stream: ByteStream = graphrs::download_object(
-    //    "divvy-tripdata", 
-    //    "202303-divvy-tripdata.zip").await;
-    //let data: Bytes= file_stream.collect().await.map(|data| data.into_bytes()).expect("error reading data");
-    //graphrs::write_bytes_to_zip_file("bikes.zip", data);
+    let file_stream: ByteStream = graphrs::download_object(
+        "divvy-tripdata", 
+        "202303-divvy-tripdata.zip").await;
+    let data: Bytes= file_stream.collect().await.map(|data| data.into_bytes()).expect("error reading data");
+    graphrs::write_bytes_to_zip_file("bikes.zip", data);
     // zip file will be auto extracted into data folder
-    //let df: DataFrame = graphrs::read_csv("data/202303-divvy-tripdata.csv").expect("error reading csv");
-    //let dirty_graph: DataFrame = df.select(["start_station_id", "end_station_id"]).expect("blah");
-    //let mut graph: DataFrame = dirty_graph.unique(None, UniqueKeepStrategy::Any, None).expect("blah blah");
-    //let mut out: DataFrame = graphrs::combine_distinct_dataframes(&mut graph);
-    //graphrs::write_dataframe_to_csv(&mut out, "nodes.csv");
-    //graphrs::write_dataframe_to_csv(&mut graph, "edges.csv");
+    let df: DataFrame = graphrs::read_csv("data/202303-divvy-tripdata.csv").expect("error reading csv");
+    let dirty_graph: DataFrame = df.select(["start_station_id", "end_station_id"]).expect("blah");
+    let mut graph: DataFrame = dirty_graph.unique(None, UniqueKeepStrategy::Any, None).expect("blah blah");
+    let mut out: DataFrame = graphrs::combine_distinct_dataframes(&mut graph);
+    graphrs::write_dataframe_to_csv(&mut out, "nodes.csv");
+    graphrs::write_dataframe_to_csv(&mut graph, "edges.csv");
     // read nodes with Pythons script to visualize graph
 
     let file: File = File::open("edges.csv").expect("error opening file");
